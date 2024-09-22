@@ -85,21 +85,21 @@ h1{
 }
 .step {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     position: relative;
 }
 .deleteBtn{
-    position: absolute;
-    right: 0px;
-    top: 50%;
-    transform: translateY(-50%);
+    display: inline-block;
     background-color: #000;
-    padding: 8px 20px;
+    padding: 8px 15px 6px;
     border-radius: 5px;
     cursor: pointer;
     color: #fff;
 }
 select, input {
-    min-width: 150px;
+    min-width: 140px;
     padding: 10px;
     margin-top: 8px;
     border-radius: 5px;
@@ -120,7 +120,6 @@ input[type=checkbox]{
     justify-content: flex-end;
     gap:10px;
     align-items: center;
-    width: 400px;
 }
 .step .action-setting>label{
     color: var(--second-color);
@@ -193,3 +192,36 @@ input[type=checkbox]{
     gap:5px;
 }
 
+@media (max-width:1024px){
+    body{
+        padding: 40px 25px;
+    }
+    h1{
+        font-size: 32px;
+    }
+    .wrap{
+        max-width:400px;
+        width: 100%;
+    }
+    .container{
+        flex-direction: column;
+    }
+    .step .action-setting{
+        width:100%;
+    }
+    .step .action-setting>label{
+        font-size: 16px;
+    }
+    select, input{
+        min-width: 110px;
+        width: 110px;
+        font-size: 16px;
+    }
+    input[type=checkbox] {
+        min-width: 24px;
+        width: 24px;
+    }
+    .deleteBtn{
+        padding: 5px;
+    }
+}

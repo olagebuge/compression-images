@@ -9,6 +9,7 @@ document
     newStep.classList.add("step");
     newStep.id = `step-${stepCount}`;
     newStep.innerHTML = `
+    <div>
       <div class="action-setting">
         <label for="step-action">Step ${stepCount}</label>
         <select id="step-action">
@@ -32,7 +33,8 @@ document
           <label for="action-value">––數值(px)</label>
           <input type="number" id="step-size" placeholder="例:600" />
         </div>
-         <span class="deleteBtn">刪除</span>`;
+        </div>
+         <span class="deleteBtn"><img src="./img/Trash2.svg" alt="垃圾桶"></span>`;
 
     // 將新步驟插入步驟區域
     document
@@ -339,7 +341,8 @@ function createStepElement(stepData, count) {
   stepElement.classList.add("step");
   stepElement.id = `step-${count}`;
   stepElement.innerHTML = `
-  <div class="action-setting">
+  <div>
+    <div class="action-setting">
     <label for="step-action">Step ${count}</label>
     <select id="step-action">
       <option value="resize">等比縮放</option>
@@ -362,7 +365,8 @@ function createStepElement(stepData, count) {
       <label for="action-value">––數值(px)</label>
       <input type="number" id="step-size" placeholder="例:600" />
     </div>
-     <span class="deleteBtn">刪除</span> 
+     </div>
+    <span class="deleteBtn"><img src="./img/Trash2.svg" alt="垃圾桶"></span> 
     `;
 
   // 設置 action 選擇器
