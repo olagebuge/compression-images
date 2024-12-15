@@ -221,6 +221,10 @@ async function adjustment(file, action, actionMethod, checkResize, resultValue, 
           }
           canvas.width = newWidth;
           canvas.height = newHeight;
+
+          // 填充白色背景
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, newWidth, newHeight);
         }
 
