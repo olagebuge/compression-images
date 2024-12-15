@@ -16,10 +16,11 @@ document
           <option value="resize">等比縮放</option>
           <option value="crop">裁切</option>
         </select>
-        <select id="according">
-          <option value="according-width">依據寬</option>
-          <option value="according-height">依據高</option>
-        </select>
+        
+          <select id="according">
+            <option value="according-width">依據寬</option>
+            <option value="according-height">依據高</option>
+          </select>
         <select id="crop-from" class="hidden">
             <option value="from-height">裁掉上下</option>
             <option value="from-width">裁掉左右</option>
@@ -33,6 +34,9 @@ document
           <label for="action-value">––數值(px)</label>
           <input type="number" id="step-size" placeholder="例:600" />
         </div>
+          <label for="smaller-no-resize" id="check-resize" title="例：指定尺寸為800px，上傳的圖片若為600px，小於指定尺寸，則跳過此步驟不執行"><input type="checkbox" id="smaller-no-resize" name="smaller-no-resize"/>
+          小於指定長寬的圖片不縮放
+          </label>
         </div>
          <span class="deleteBtn"><img src="./img/Trash2.svg" alt="垃圾桶"></span>`;
 
@@ -91,9 +95,10 @@ document.querySelector(".comfirm-btn").addEventListener("click", async function 
         for (const step of allSteps) {
           const action = step.querySelector("#step-action").value;
           const actionMethod = (action == "resize") ? step.querySelector("#according").value : step.querySelector("#crop-from").value;
+          const checkResize = step.querySelector("#smaller-no-resize").checked;
           const resultValue = step.querySelector("#step-size").value;
 
-          file = await adjustment(file, action, actionMethod, resultValue, convertToJpgCheckbox);
+          file = await adjustment(file, action, actionMethod, checkResize, resultValue, convertToJpgCheckbox);
         }
       }
 
@@ -118,7 +123,7 @@ document.querySelector(".comfirm-btn").addEventListener("click", async function 
 });
 
 // 調整圖片的功能
-async function adjustment(file, action, actionMethod, resultValue, convertToJpg) {
+async function adjustment(file, action, actionMethod, checkResize, resultValue, convertToJpg) {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = function (event) {
@@ -131,20 +136,32 @@ async function adjustment(file, action, actionMethod, resultValue, convertToJpg)
 
         if (action === "resize") {
           if (actionMethod === "according-width") {
-            if (img.width > resultValue) {
+            if (checkResize === true) {
+              //如果有勾選, 就會檢查寬度
+              if (img.width > resultValue) {
+                newWidth = parseInt(resultValue);
+                newHeight = (img.height * newWidth) / img.width;
+              } else {
+                newWidth = img.width;
+                newHeight = img.height;
+              }
+            } else {
               newWidth = parseInt(resultValue);
               newHeight = (img.height * newWidth) / img.width;
-            } else {
-              newWidth = img.width;
-              newHeight = img.height;
             }
+
           } else if (actionMethod === "according-height") {
-            if (img.height > resultValue) {
+            if (checkResize === true) {
+              if (img.height > resultValue) {
+                newHeight = parseInt(resultValue);
+                newWidth = (img.width * newHeight) / img.height;
+              } else {
+                newWidth = img.width;
+                newHeight = img.height;
+              }
+            } else {
               newHeight = parseInt(resultValue);
               newWidth = (img.width * newHeight) / img.height;
-            } else {
-              newWidth = img.width;
-              newHeight = img.height;
             }
           }
           canvas.width = newWidth;
@@ -299,9 +316,10 @@ function saveSettings() {
   document.querySelectorAll('.step').forEach(step => {
     const action = step.querySelector("#step-action").value;
     const actionMethod = (action == "resize") ? step.querySelector("#according").value : step.querySelector("#crop-from").value;
+    const checkResize = step.querySelector("#smaller-no-resize").checked;
     const resultValue = step.querySelector("#step-size").value;
 
-    settings.steps.push({ action, actionMethod, resultValue });
+    settings.steps.push({ action, actionMethod, checkResize, resultValue });
   });
 
   // 將設定儲存到 localStorage
@@ -348,6 +366,7 @@ function createStepElement(stepData, count) {
       <option value="resize">等比縮放</option>
       <option value="crop">裁切</option>
     </select>
+
     <select id="according" class="hidden">
       <option value="according-width">依據寬</option>
       <option value="according-height">依據高</option>
@@ -365,17 +384,26 @@ function createStepElement(stepData, count) {
       <label for="action-value">––數值(px)</label>
       <input type="number" id="step-size" placeholder="例:600" />
     </div>
+      <label for="smaller-no-resize" id="check-resize" class="hidden" title="例：指定尺寸為800px，上傳的圖片若為600px，小於指定尺寸，則跳過此步驟不執行">
+      <input type="checkbox" id="smaller-no-resize" name="smaller-no-resize" />
+        小於指定長寬圖片不縮放
+      </label>
      </div>
     <span class="deleteBtn"><img src="./img/Trash2.svg" alt="垃圾桶"></span> 
     `;
 
-  // 設置 action 選擇器
-  const actionSelect = stepElement.querySelector("#step-action");
-  actionSelect.value = stepData.action;
+ // 設置 action 選擇器
+ const actionSelect = stepElement.querySelector("#step-action");
+ actionSelect.value = stepData.action;
+  const checkResize = stepElement.querySelector("#smaller-no-resize");
+ checkResize.checked = stepData.checkResize;
 
   // 設置 actionMethod 選擇器
+
   const actionMethodSelect = stepData.action === 'resize' ? stepElement.querySelector("#according") : stepElement.querySelector("#crop-from");
   actionMethodSelect.classList.remove("hidden");
+  const checkResizeBlock = stepElement.querySelector("#check-resize");
+  if(stepData.action === 'resize'){checkResizeBlock.classList.remove("hidden");}
   actionMethodSelect.value = stepData.actionMethod;
 
   // 創建並設置 resultValue 輸入
@@ -395,16 +423,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target && e.target.id === 'step-action') {
       const stepContainer = e.target.closest('.step'); // 取得該 step 的父容器
       const accordingSelect = stepContainer.querySelector('#according');
+      const checkResize = stepContainer.querySelector('#check-resize');
       const cropFromSelect = stepContainer.querySelector('#crop-from');
 
       if (e.target.value === 'resize') {
         // 選擇"等比縮放"，顯示 according，隱藏 crop-from
         accordingSelect.classList.remove('hidden');
+        checkResize.classList.remove('hidden');
         cropFromSelect.classList.add('hidden');
       } else if (e.target.value === 'crop') {
         // 選擇"裁切"，顯示 crop-from，隱藏 according
         cropFromSelect.classList.remove('hidden');
         accordingSelect.classList.add('hidden');
+        checkResize.classList.add('hidden');
       }
     }
   });

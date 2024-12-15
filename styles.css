@@ -192,6 +192,8 @@ input[type=checkbox]{
     gap:5px;
 }
 
+
+
 @media (max-width:1024px){
     body{
         padding: 40px 25px;

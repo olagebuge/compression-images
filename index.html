@@ -17,37 +17,54 @@
         <div class="left-block">
           <h2 class="step-header">
             處理流程設定
-            <button class="save-settings-btn"><img src="./img/Save.svg" alt="savesop" />儲存常用</button>
+            <button class="save-settings-btn">
+              <img src="./img/Save.svg" alt="savesop" />儲存常用
+            </button>
           </h2>
           <div class="steps">
             <div class="step" id="step-1">
               <div>
-              <div class="action-setting">
-                <label for="step-action">Step 1</label>
-                <select id="step-action">
-                  <option value="resize">等比縮放</option>
-                  <option value="crop">裁切</option>
-                </select>
-                <select id="according">
-                  <option value="according-width">依據寬</option>
-                  <option value="according-height">依據高</option>
-                </select>
-                <select id="crop-from" class="hidden">
-                  <option value="from-height">裁掉上下</option>
-                  <option value="from-width">裁掉左右</option>
-                  <option value="from-up">裁掉下方</option>
-                  <option value="from-bottom">裁掉上方</option>
-                  <option value="from-right">裁掉右邊</option>
-                  <option value="from-left">裁掉左邊</option>
-                </select>
+                <div class="action-setting">
+                  <label for="step-action">Step 1</label>
+                  <select id="step-action">
+                    <option value="resize">等比縮放</option>
+                    <option value="crop">裁切</option>
+                  </select>
+
+                  <select id="according">
+                    <option value="according-width">依據寬</option>
+                    <option value="according-height">依據高</option>
+                  </select>
+
+                  <select id="crop-from" class="hidden">
+                    <option value="from-height">裁掉上下</option>
+                    <option value="from-width">裁掉左右</option>
+                    <option value="from-up">裁掉下方</option>
+                    <option value="from-bottom">裁掉上方</option>
+                    <option value="from-right">裁掉右邊</option>
+                    <option value="from-left">裁掉左邊</option>
+                  </select>
+                </div>
+                <div class="action-setting">
+                  <label for="action-value">––數值(px)</label>
+                  <input type="number" id="step-size" placeholder="例:1920" />
+                </div>
+                <label
+                  for="smaller-no-resize"
+                  id="check-resize"
+                  title="例：指定尺寸為800px，上傳的圖片若為600px，小於指定尺寸，則跳過此步驟不執行"
+                  ><input
+                    type="checkbox"
+                    id="smaller-no-resize"
+                    name="smaller-no-resize"
+                  />
+                  小於指定長寬的圖片不縮放
+                </label>
               </div>
-              <div class="action-setting">
-                <label for="action-value">––數值(px)</label>
-                <input type="number" id="step-size" placeholder="例:1920" />
-              </div>
-            </div>
               <!-- 刪除步驟按鈕 -->
-              <span class="deleteBtn"><img src="./img/Trash2.svg" alt="垃圾桶"></span>
+              <span class="deleteBtn"
+                ><img src="./img/Trash2.svg" alt="垃圾桶"
+              /></span>
             </div>
           </div>
           <button class="add-step-btn" id="add-step">
